@@ -1,0 +1,55 @@
+package ma.emsi.iMark.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import ma.emsi.iMark.repository.ObjectBRepository;
+import ma.emsi.iMark.model.ObjectB;
+
+@RestController
+@RequestMapping("/objects")
+public class ObjectBController {
+
+	@Autowired
+	private ObjectBRepository objectRepository;
+	
+	@GetMapping
+	public List<ObjectB> getAll(){
+		return objectRepository.findAll();
+	}
+	
+	@PostMapping
+	public void addObject(@RequestBody ObjectB object) {
+		objectRepository.save(object);
+	}
+	
+	@GetMapping("/{id}")
+	public ObjectB getObject(@PathVariable int id) {
+		return objectRepository.findById(id).get();
+	}
+	
+	@PutMapping
+	public void updateObject(@RequestBody ObjectB object) {
+		ObjectB i=objectRepository.findById(object.getId()).get();
+		if(object!=i) {
+			i.setAnnotation(object.getAnnotation());
+			i.setBbox(object.getBbox());
+			objectRepository.save(i);
+		}
+		
+	}
+	
+	@DeleteMapping("/{id}")
+	public void deleteObject(@PathVariable int id) {
+		objectRepository.deleteById(id);
+	}
+}
