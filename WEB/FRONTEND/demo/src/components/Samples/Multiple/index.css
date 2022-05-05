@@ -1,0 +1,36 @@
+.home-container .webcam-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  width: 100%;
+  margin: 0 auto;
+}
+.home-container .webcam-container .webcam-btn {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  width: 38%;
+}
+/* Media queries ~ */
+@media screen and (max-width: 1000px) {
+  .home-container .container {
+    max-width: 90vw;
+  }
+}
+@media screen and (max-width: 678px) {
+  .login-container {
+    padding-top: 10%;
+  }
+  .home-container .container {
+    max-width: 80vw;
+  }
+  .home-container form {
+    width: 90%;
+  }
+  .home-container .loginDesign {
+    display: none;
+  }
+  .home-container .container .text {
+    width: 100%;
+    padding: 80px 20px;
+  }
+}
