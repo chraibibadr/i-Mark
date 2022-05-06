@@ -5,11 +5,15 @@ import java.util.List;
 
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
 @Document(collection="image")
 public class Image {
+	
+	@Transient
+	public static final String SEQUENCE_NAME="image_sequence";
 	
 	@Id
 	private int id;

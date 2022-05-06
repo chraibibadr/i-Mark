@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ma.emsi.iMark.repository.ObjectBRepository;
+import ma.emsi.iMark.service.SequenceGeneratorService;
 import ma.emsi.iMark.model.ObjectB;
 
 @RestController
@@ -22,6 +23,9 @@ public class ObjectBController {
 	@Autowired
 	private ObjectBRepository objectRepository;
 	
+	@Autowired
+	private SequenceGeneratorService sequenceGeneratorService;
+	
 	@GetMapping
 	public List<ObjectB> getAll(){
 		return objectRepository.findAll();
@@ -29,6 +33,7 @@ public class ObjectBController {
 	
 	@PostMapping
 	public void addObject(@RequestBody ObjectB object) {
+		object.setId(sequenceGeneratorService.getSequenceNumber(ObjectB.SEQUENCE_NAME));
 		objectRepository.save(object);
 	}
 	

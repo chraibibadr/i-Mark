@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ma.emsi.iMark.model.GpsLocation;
 import ma.emsi.iMark.repository.GpsLocationRepository;
+import ma.emsi.iMark.service.SequenceGeneratorService;
 
 @RestController
 @RequestMapping("/gpsLocations")
@@ -22,6 +23,10 @@ public class GpsLocationController {
 	@Autowired
 	private GpsLocationRepository gpsLocationRepository;
 	
+	@Autowired
+	private SequenceGeneratorService sequenceGeneratorService;
+	
+	
 	@GetMapping
 	public List<GpsLocation> getAll(){
 		return gpsLocationRepository.findAll();
@@ -29,6 +34,7 @@ public class GpsLocationController {
 	
 	@PostMapping
 	public void addGpsLocation(@RequestBody GpsLocation gpsLocation) {
+		gpsLocation.setId(sequenceGeneratorService.getSequenceNumber(GpsLocation.SEQUENCE_NAME));
 		gpsLocationRepository.save(gpsLocation);
 	}
 	

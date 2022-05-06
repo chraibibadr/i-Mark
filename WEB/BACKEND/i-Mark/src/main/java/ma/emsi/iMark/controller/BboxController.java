@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ma.emsi.iMark.model.Bbox;
 import ma.emsi.iMark.repository.BboxRepository;
+import ma.emsi.iMark.service.SequenceGeneratorService;
 
 @RestController
 @RequestMapping("/bboxes")
@@ -22,6 +23,9 @@ public class BboxController {
 	@Autowired
 	private BboxRepository bboxRepository;
 	
+	@Autowired
+	private SequenceGeneratorService sequenceGeneratorService;
+	
 	@GetMapping
 	public List<Bbox> getAll(){
 		return bboxRepository.findAll();
@@ -29,6 +33,7 @@ public class BboxController {
 	
 	@PostMapping
 	public void addBbox(@RequestBody Bbox bbox) {
+		bbox.setId(sequenceGeneratorService.getSequenceNumber(Bbox.SEQUENCE_NAME));
 		bboxRepository.save(bbox);
 	}
 	

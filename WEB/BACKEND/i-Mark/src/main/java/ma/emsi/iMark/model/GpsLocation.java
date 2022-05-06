@@ -1,10 +1,14 @@
 package ma.emsi.iMark.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection="gpsLocations")
 public class GpsLocation {
+	
+	@Transient
+	public static final String SEQUENCE_NAME="gpsLocation_sequence";
 
 	@Id
 	private int id;

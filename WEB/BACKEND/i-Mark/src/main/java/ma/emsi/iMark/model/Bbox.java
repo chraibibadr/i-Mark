@@ -1,11 +1,16 @@
 package ma.emsi.iMark.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection="bbox")
 public class Bbox {
 
+	@Transient
+	public static final String SEQUENCE_NAME="bbox_sequence";
+	
+	
 	@Id
 	private int id;
 	

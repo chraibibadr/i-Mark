@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ma.emsi.iMark.model.Image;
 import ma.emsi.iMark.repository.ImageRepository;
+import ma.emsi.iMark.service.SequenceGeneratorService;
 
 @RestController
 @RequestMapping("/images")
@@ -22,6 +23,9 @@ public class ImageController {
 	@Autowired
 	private ImageRepository imageRepository;
 	
+	@Autowired
+	private SequenceGeneratorService sequenceGeneratorService;
+	
 	@GetMapping
 	public List<Image> getAll(){
 		return imageRepository.findAll();
@@ -29,6 +33,7 @@ public class ImageController {
 	
 	@PostMapping
 	public void addImage(@RequestBody Image image) {
+		image.setId(sequenceGeneratorService.getSequenceNumber(Image.SEQUENCE_NAME));
 		imageRepository.save(image);
 	}
 	
