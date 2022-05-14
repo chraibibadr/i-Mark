@@ -17,7 +17,7 @@ public class ObjectB {
 	private int id;
 	private String annotation;
 	
-	private List<Bbox> bbox;
+	private List<Polygon> polygons;
 
 	public int getId() {
 		return id;
@@ -35,13 +35,15 @@ public class ObjectB {
 		this.annotation = annotation;
 	}
 
-	public List<Bbox> getBbox() {
-		return bbox;
+	public List<Polygon> getPolygons() {
+		return polygons;
 	}
 
-	public void setBbox(List<Bbox> bbox) {
-		this.bbox = bbox;
+	public void setPolygons(List<Polygon> polygons) {
+		this.polygons = polygons;
 	}
+
+	
 
 	
 	

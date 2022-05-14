@@ -12,49 +12,49 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ma.emsi.iMark.repository.ObjectBRepository;
+import ma.emsi.iMark.model.Point;
+import ma.emsi.iMark.repository.PointRepository;
 import ma.emsi.iMark.service.SequenceGeneratorService;
-import ma.emsi.iMark.model.ObjectB;
 
 @RestController
-@RequestMapping("/objects")
-public class ObjectBController {
+@RequestMapping("/points")
+public class PointController {
 
 	@Autowired
-	private ObjectBRepository objectRepository;
+	private PointRepository pointRepository;
 	
 	@Autowired
 	private SequenceGeneratorService sequenceGeneratorService;
 	
 	@GetMapping
-	public List<ObjectB> getAll(){
-		return objectRepository.findAll();
+	public List<Point> getAll(){
+		return pointRepository.findAll();
 	}
 	
 	@PostMapping
-	public void addObject(@RequestBody ObjectB object) {
-		object.setId(sequenceGeneratorService.getSequenceNumber(ObjectB.SEQUENCE_NAME));
-		objectRepository.save(object);
+	public void addPoint(@RequestBody Point point) {
+		point.setId(sequenceGeneratorService.getSequenceNumber(Point.SEQUENCE_NAME));
+		pointRepository.save(point);
 	}
 	
 	@GetMapping("/{id}")
-	public ObjectB getObject(@PathVariable int id) {
-		return objectRepository.findById(id).get();
+	public Point getPoint(@PathVariable int id) {
+		return pointRepository.findById(id).get();
 	}
 	
 	@PutMapping
-	public void updateObject(@RequestBody ObjectB object) {
-		ObjectB i=objectRepository.findById(object.getId()).get();
-		if(object!=i) {
-			i.setAnnotation(object.getAnnotation());
-			i.setPolygons(object.getPolygons());
-			objectRepository.save(i);
+	public void updatePoint(@RequestBody Point point) {
+		Point i=pointRepository.findById(point.getId()).get();
+		if(point!=i) {
+			i.setX(point.getX());
+			i.setY(point.getY());
+			pointRepository.save(i);
 		}
 		
 	}
 	
 	@DeleteMapping("/{id}")
-	public void deleteObject(@PathVariable int id) {
-		objectRepository.deleteById(id);
+	public void deletePoint(@PathVariable int id) {
+		pointRepository.deleteById(id);
 	}
 }
