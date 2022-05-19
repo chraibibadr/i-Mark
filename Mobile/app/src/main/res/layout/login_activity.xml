@@ -72,7 +72,7 @@
             android:inputType="textPassword" />
 
         <Button
-            android:id="@+id/btn_llogin"
+            android:id="@+id/btn_login"
             android:layout_width="349dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/et_lpassword"
@@ -85,7 +85,7 @@
             android:textSize="25dp" />
 
         <Button
-            android:id="@+id/btn_lregister"
+            android:id="@+id/btn_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
