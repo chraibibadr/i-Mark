@@ -12,51 +12,48 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ma.emsi.iMark.model.Bbox;
-import ma.emsi.iMark.repository.BboxRepository;
+import ma.emsi.iMark.model.Polygon;
+import ma.emsi.iMark.repository.PolygonRepository;
 import ma.emsi.iMark.service.SequenceGeneratorService;
 
 @RestController
-@RequestMapping("/bboxes")
-public class BboxController {
+@RequestMapping("/polygons")
+public class PolygonController {
 
 	@Autowired
-	private BboxRepository bboxRepository;
+	private PolygonRepository polygonRepository;
 	
 	@Autowired
 	private SequenceGeneratorService sequenceGeneratorService;
 	
 	@GetMapping
-	public List<Bbox> getAll(){
-		return bboxRepository.findAll();
+	public List<Polygon> getAll(){
+		return polygonRepository.findAll();
 	}
 	
 	@PostMapping
-	public void addBbox(@RequestBody Bbox bbox) {
-		bbox.setId(sequenceGeneratorService.getSequenceNumber(Bbox.SEQUENCE_NAME));
-		bboxRepository.save(bbox);
+	public void addPolygon(@RequestBody Polygon polygon) {
+		polygon.setId(sequenceGeneratorService.getSequenceNumber(Polygon.SEQUENCE_NAME));
+		polygonRepository.save(polygon);
 	}
 	
 	@GetMapping("/{id}")
-	public Bbox getBbox(@PathVariable int id) {
-		return bboxRepository.findById(id).get();
+	public Polygon getPolygon(@PathVariable int id) {
+		return polygonRepository.findById(id).get();
 	}
 	
 	@PutMapping
-	public void updateBbox(@RequestBody Bbox bbox) {
-		Bbox i=bboxRepository.findById(bbox.getId()).get();
-		if(bbox!=i) {
-			i.setXmax(bbox.getXmax());
-			i.setYmax(bbox.getYmax());
-			i.setXmin(bbox.getXmin());
-			i.setYmin(bbox.getYmin());
-			bboxRepository.save(i);
+	public void updatePolygon(@RequestBody Polygon polygon) {
+		Polygon i=polygonRepository.findById(polygon.getId()).get();
+		if(polygon!=i) {
+			i.setCoordonnees(polygon.getCoordonnees());
+			polygonRepository.save(i);
 		}
 		
 	}
 	
 	@DeleteMapping("/{id}")
-	public void deleteBbox(@PathVariable int id) {
-		bboxRepository.deleteById(id);
+	public void deletePolygon(@PathVariable int id) {
+		polygonRepository.deleteById(id);
 	}
 }
