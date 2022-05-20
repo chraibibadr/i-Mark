@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ma.emsi.iMark.model.Point;
 import ma.emsi.iMark.model.Polygon;
 import ma.emsi.iMark.repository.PolygonRepository;
 import ma.emsi.iMark.service.SequenceGeneratorService;
@@ -24,6 +25,9 @@ public class PolygonController {
 	private PolygonRepository polygonRepository;
 	
 	@Autowired
+	private PointController pointController;
+	
+	@Autowired
 	private SequenceGeneratorService sequenceGeneratorService;
 	
 	@GetMapping
@@ -34,6 +38,13 @@ public class PolygonController {
 	@PostMapping
 	public void addPolygon(@RequestBody Polygon polygon) {
 		polygon.setId(sequenceGeneratorService.getSequenceNumber(Polygon.SEQUENCE_NAME));
+		
+		List<Point> p=polygon.getCoordonnees();
+		
+		for (Point point : p) {
+			pointController.addPoint(point);
+		}
+		
 		polygonRepository.save(polygon);
 	}
 	

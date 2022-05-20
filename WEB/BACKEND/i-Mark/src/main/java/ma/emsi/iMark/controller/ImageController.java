@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ma.emsi.iMark.model.GpsLocation;
 import ma.emsi.iMark.model.Image;
+import ma.emsi.iMark.model.ObjectB;
+import ma.emsi.iMark.repository.GpsLocationRepository;
 import ma.emsi.iMark.repository.ImageRepository;
 import ma.emsi.iMark.service.SequenceGeneratorService;
 
@@ -22,6 +25,12 @@ public class ImageController {
 
 	@Autowired
 	private ImageRepository imageRepository;
+	
+	@Autowired
+	private GpsLocationController gpsLocationController;
+	
+	@Autowired
+	private ObjectBController objectBController;
 	
 	@Autowired
 	private SequenceGeneratorService sequenceGeneratorService;
@@ -34,6 +43,18 @@ public class ImageController {
 	@PostMapping
 	public void addImage(@RequestBody Image image) {
 		image.setId(sequenceGeneratorService.getSequenceNumber(Image.SEQUENCE_NAME));
+		GpsLocation lo=image.getGps_location();
+		
+		gpsLocationController.addGpsLocation(lo);
+		
+		List<ObjectB> obj=image.getObjects();
+		
+		for (ObjectB objectB : obj) {
+			objectBController.addObject(objectB);
+		}
+		
+		
+		
 		imageRepository.save(image);
 	}
 	

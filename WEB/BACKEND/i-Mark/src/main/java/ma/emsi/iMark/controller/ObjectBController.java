@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ma.emsi.iMark.repository.ObjectBRepository;
 import ma.emsi.iMark.service.SequenceGeneratorService;
 import ma.emsi.iMark.model.ObjectB;
+import ma.emsi.iMark.model.Polygon;
 
 @RestController
 @RequestMapping("/objects")
@@ -22,6 +23,9 @@ public class ObjectBController {
 
 	@Autowired
 	private ObjectBRepository objectRepository;
+	
+	@Autowired
+	private PolygonController polygonController;
 	
 	@Autowired
 	private SequenceGeneratorService sequenceGeneratorService;
@@ -34,6 +38,12 @@ public class ObjectBController {
 	@PostMapping
 	public void addObject(@RequestBody ObjectB object) {
 		object.setId(sequenceGeneratorService.getSequenceNumber(ObjectB.SEQUENCE_NAME));
+		
+		List<Polygon> p=object.getPolygons();
+		for (Polygon polygon : p) {
+			polygonController.addPolygon(polygon);
+		}
+		
 		objectRepository.save(object);
 	}
 	
