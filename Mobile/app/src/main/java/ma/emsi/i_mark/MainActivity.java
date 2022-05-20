@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     String insertUrl = "http://i-mark.herokuapp.com/images";
 
-    private Button confirm, open,previous,camera,clear,done;
+    private Button confirm, open, previous, camera, clear, done;
     private polygoneView polygoneView;
     Drawable d;
 
@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         polygoneView = findViewById(R.id.image);
 
@@ -92,10 +94,24 @@ public class MainActivity extends AppCompatActivity {
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                polygoneView.clearAnnotation();
+                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    buildAlertMessageNoGps();
+                } else {
+                    if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 150, new
+                            LocationListener() {
+                                @Override
+                                public void onLocationChanged(Location location) {
+                                    latitude = location.getLatitude();
+                                    longitude = location.getLongitude();
+                                }
+                            });
+                }
                 if (!hasPermissions(MainActivity.this, PERMISSIONS)) {
                     ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, 1);
-                    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                    startActivityForResult(intent, 100);
                 } else {
                     Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
                     startActivityForResult(intent, 100);
@@ -118,24 +134,10 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.CAMERA
         };
 
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 150, new
-                LocationListener() {
-                    @Override
-                    public void onLocationChanged(Location location) {
-                        latitude = location.getLatitude();
-                        longitude = location.getLongitude();
-                    }
-                });
-
         confirm = findViewById(R.id.confirm);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 AlertDialog.Builder annotator = new AlertDialog.Builder(MainActivity.this);
                 annotator.setTitle("Saisir l'annotation !");
 
@@ -148,16 +150,8 @@ public class MainActivity extends AppCompatActivity {
                         tag = annotation.getText().toString();
                         Date currentTime = Calendar.getInstance().getTime();
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                        Log.d("width", width);
-                        Log.d("height", height);
-                        Log.d("date_captured", currentTime.toString());
-                        Log.d("latitude", latitude + "");
-                        Log.d("longitude", longitude + "");
-                        Log.d("annotation", tag);
-                        Log.d("polygone", polygoneView.getPolygone().toString());
-                        Log.d("image", encodeImageString);
-                        Toast.makeText(MainActivity.this, "width : " + width + "\nheight : " + height + "\ndate_captured : " + sdf.format(currentTime) + "\nlatitude : " + latitude + "\nlongitude : " + longitude + "\nannotation : " + tag + "\npolygone : \n" + polygoneView.getPolygone(), Toast.LENGTH_LONG).show();
-
+                        // Toast.makeText(MainActivity.this, "width : " + width + "\nheight : " + height + "\ndate_captured : " + sdf.format(currentTime) + "\nlatitude : " + latitude + "\nlongitude : " + longitude + "\nannotation : " + tag + "\npolygone : \n" + polygoneView.getPolygone(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "Annotation saved !!", Toast.LENGTH_LONG).show();
                         JSONObject image = new JSONObject();
 
                         JSONObject gps_location = new JSONObject();
@@ -196,15 +190,14 @@ public class MainActivity extends AppCompatActivity {
                                 pointObject.put("y", p.getY());
                                 coordonneesArray.put(pointObject);
                             }
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
                         Log.d("JSON OBJECT", image.toString());
                         pushToDB(image);
-
+                        polygoneView.clearAnnotation();
+                        polygoneView.setBackgroundResource(R.mipmap.default_bg);
                     }
                 });
                 annotator.show();
@@ -265,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
         encodeImageString = android.util.Base64.encodeToString(bytesofimage, Base64.DEFAULT);
     }
 
-    void pushToDB(JSONObject js){
+    void pushToDB(JSONObject js) {
         // Make request for JSONObject
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.POST, insertUrl, js,
@@ -293,5 +286,23 @@ public class MainActivity extends AppCompatActivity {
 
         // Adding request to request queue
         Volley.newRequestQueue(this).add(jsonObjReq);
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 }
