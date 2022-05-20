@@ -98,6 +98,14 @@ public class MainActivity extends AppCompatActivity {
                 if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     buildAlertMessageNoGps();
                 } else {
+
+                    if (!hasPermissions(MainActivity.this, PERMISSIONS)) {
+                        ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, 1);
+                    } else {
+                        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                        startActivityForResult(intent, 100);
+                    }
+                    
                     if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }
@@ -109,12 +117,6 @@ public class MainActivity extends AppCompatActivity {
                                     longitude = location.getLongitude();
                                 }
                             });
-                }
-                if (!hasPermissions(MainActivity.this, PERMISSIONS)) {
-                    ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, 1);
-                } else {
-                    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                    startActivityForResult(intent, 100);
                 }
             }
         });
