@@ -47,9 +47,9 @@
         android:layout_below="@+id/et_cpassword"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="65dp"
+        android:background="@drawable/btn_bckg"
         android:ems="10"
-        android:text="Register"
-        android:background="@drawable/btn_bckg"/>
+        android:text="Register" />
 
     <Button
         android:id="@+id/btn_login"
@@ -57,9 +57,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/btn_bckg"
         android:ems="20"
-        android:text="Login"
-        android:background="@drawable/btn_bckg"/>
+        android:text="Login" />
 
 
 </RelativeLayout>
